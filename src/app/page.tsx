@@ -20,7 +20,7 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
           <div className="flex items-center gap-2">
 
-            <div className="w-20 h-24 relative">
+            <div className="w-16 h-16 relative">
               <Image
                 src="/logo-dalivim.png"
                 alt="Dalivim logo"
@@ -255,24 +255,30 @@ export default function LandingPage() {
 
       {/* Footer */}
       <footer className="bg-dark text-white py-20 px-6 border-t border-white/10">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-10">
-          <div className="flex items-center gap-2 text-white">
-            <div className="w-8 h-12 relative">
-              <Image
-                src="/logo-dalivim.png"
-                alt="Dalivim logo"
-                fill
-                className="object-contain"
-              />
+        <div className="max-w-7xl mx-auto flex flex-col gap-10">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-10">
+            <div className="flex items-center gap-2 text-white">
+              <div className="w-8 h-12 relative">
+                <Image
+                  src="/logo-dalivim.png"
+                  alt="Dalivim logo"
+                  fill
+                  className="object-contain"
+                />
+              </div>
+              <span className="font-display font-medium text-xl tracking-tight">Dalivim</span>
             </div>
-            <span className="font-display font-medium text-xl tracking-tight">Dalivim</span>
+
+            <div className="flex flex-col md:flex-row gap-6 md:gap-10 text-white/50 text-[15px]">
+              <Link href="#" className="hover:text-white transition-colors">Termos de Serviço</Link>
+              <Link href="#" className="hover:text-white transition-colors">Política de Privacidade</Link>
+              <a href="mailto:contato@dalivim.com.br" className="hover:text-white transition-colors">Contato</a>
+            </div>
           </div>
 
-          <div className="flex flex-col md:flex-row gap-6 md:gap-10 text-white/50 text-[15px]">
-            <Link href="#" className="hover:text-white transition-colors">Termos de Serviço</Link>
-            <Link href="#" className="hover:text-white transition-colors">Política de Privacidade</Link>
-            <Link href="#" className="hover:text-white transition-colors">Contato</Link>
-            <Link href="#" className="hover:text-white transition-colors">Twitter</Link>
+          <div className="border-t border-white/10 pt-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-sm text-white/40">
+            <p>Todos os direitos reservados.</p>
+            <p>63.278.101/0001-49 DALIVIM INOVA SIMPLES (I.S.).</p>
           </div>
         </div>
       </footer>
