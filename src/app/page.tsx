@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Copy, ShieldCheck, Lock, CheckCircle, Plus, Minus, ArrowRight, Menu, X, Check, XCircle, CreditCard, Banknote } from "lucide-react";
+import { ShieldCheck, Lock, CheckCircle, Plus, Minus, ArrowRight, Menu, X, Check, Banknote } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
