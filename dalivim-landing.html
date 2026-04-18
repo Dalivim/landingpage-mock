@@ -1,0 +1,999 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<title>Dalivim — Acordos mais seguros aqui.</title>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --dv-ink:            #0A0A0A;
+  --dv-ink-2:          #141416;
+  --dv-ink-3:          #1C1C20;
+  --dv-ink-4:          #2A2A2E;
+  --dv-ink-5:          #3F3F46;
+  --dv-paper:          #FFFFFF;
+  --dv-paper-2:        #FAFAFA;
+  --dv-paper-3:        #F4F4F5;
+  --dv-border:         #1C1C20;
+  --dv-border-light:   #E4E4E7;
+  --dv-border-strong:  #3F3F46;
+  --dv-muted:          #71717A;
+  --dv-muted-2:        #A1A1AA;
+  --dv-muted-dark:     #8A8A92;
+  --dv-muted-dark-2:   #5A5A62;
+  --dv-blue-500:       #1E4BA0;
+  --dv-blue-600:       #153A82;
+  --dv-blue-700:       #0B2A63;
+  --dv-success:        #1E8A5A;
+  --dv-warning:        #B45309;
+  --dv-danger:         #B42318;
+  --dv-action:         #1E4BA0;
+  --dv-action-hover:   #153A82;
+  --dv-font-display:   'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+  --dv-font-body:      'Inter', ui-sans-serif, system-ui, sans-serif;
+  --dv-font-mono:      ui-monospace, 'SF Mono', 'JetBrains Mono', Menlo, monospace;
+  --dv-ease:           cubic-bezier(0.2, 0.6, 0.2, 1);
+}
+html, body { margin: 0; padding: 0; background: #fff; color: #0A0A0A; font-family: var(--dv-font-body); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+*, *::before, *::after { box-sizing: border-box; }
+a { color: inherit; }
+button:focus-visible, input:focus-visible, textarea:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(30,75,160,0.25); }
+@keyframes dv-fade-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes dv-slide-up { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes dv-orbit-a { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes dv-orbit-b { from { transform: rotate(0deg); } to { transform: rotate(-360deg); } }
+.dv-orbit-a { animation: dv-orbit-a 220s linear infinite; transform-origin: 800px 450px; }
+.dv-orbit-b { animation: dv-orbit-b 340s linear infinite; transform-origin: 800px 450px; }
+.dv-orbit-c { animation: dv-orbit-a 480s linear infinite; transform-origin: 800px 450px; }
+</style>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin="anonymous"></script>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useRef, useMemo } = React;
+
+// ─── ICON ───────────────────────────────────────────────────────────────────
+function Icon({ name, size = 16, color = 'currentColor', strokeWidth = 2, style = {} }) {
+  const common = {
+    width: size, height: size,
+    viewBox: '0 0 24 24', fill: 'none',
+    stroke: color, strokeWidth, strokeLinecap: 'round', strokeLinejoin: 'round',
+    style: { flexShrink: 0, ...style },
+    'aria-hidden': true,
+  };
+  switch (name) {
+    case 'check':         return <svg {...common}><polyline points="20 6 9 17 4 12"/></svg>;
+    case 'arrow-right':   return <svg {...common}><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>;
+    case 'chevron-down':  return <svg {...common}><polyline points="6 9 12 15 18 9"/></svg>;
+    case 'x':             return <svg {...common}><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>;
+    case 'shield-check':  return <svg {...common}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>;
+    case 'banknote':      return <svg {...common}><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg>;
+    case 'check-circle':  return <svg {...common}><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>;
+    case 'lock':          return <svg {...common}><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>;
+    case 'linkedin':      return <svg {...common}><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 1 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>;
+    case 'twitter':       return <svg {...common}><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53A4.48 4.48 0 0 0 12 8v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg>;
+    case 'github':        return <svg {...common}><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>;
+    default:              return <svg {...common}><circle cx="12" cy="12" r="9"/></svg>;
+  }
+}
+
+// ─── ATOMS ──────────────────────────────────────────────────────────────────
+function Button({ variant = 'primary', children, onClick, style = {} }) {
+  const base = {
+    fontFamily: "'Inter', sans-serif", fontWeight: 500, fontSize: 15,
+    borderRadius: 9999, padding: '14px 28px', border: 'none', cursor: 'pointer',
+    transition: 'all 220ms cubic-bezier(0.2, 0.6, 0.2, 1)',
+    display: 'inline-flex', alignItems: 'center', gap: 8, whiteSpace: 'nowrap',
+  };
+  const variants = {
+    primary:   { background: '#1E4BA0', color: '#fff' },
+    dark:      { background: '#0A0A0A', color: '#fff' },
+    secondary: { background: '#F4F4F5', color: '#0A0A0A' },
+    outlined:  { background: 'transparent', color: '#0A0A0A', border: '1.5px solid #E4E4E7', padding: '12.5px 26.5px' },
+    ghostDark: { background: 'rgba(255,255,255,0.06)', color: '#fff', border: '1.5px solid rgba(255,255,255,0.15)', padding: '12.5px 26.5px' },
+  };
+  return (
+    <button
+      style={{ ...base, ...variants[variant], ...style }}
+      onClick={onClick}
+      onMouseEnter={e => {
+        if (variant === 'primary')   e.currentTarget.style.background = '#153A82';
+        else if (variant === 'dark') e.currentTarget.style.opacity = 0.88;
+        else if (variant === 'secondary') e.currentTarget.style.background = '#ECECEF';
+        else if (variant === 'outlined')  e.currentTarget.style.background = '#F4F4F5';
+        else if (variant === 'ghostDark') e.currentTarget.style.background = 'rgba(255,255,255,0.12)';
+      }}
+      onMouseLeave={e => {
+        e.currentTarget.style.background = variants[variant].background;
+        e.currentTarget.style.opacity = 1;
+      }}
+    >{children}</button>
+  );
+}
+
+function Container({ children, style = {}, className = '' }) {
+  return (
+    <div className={className} style={{ maxWidth: 1200, margin: '0 auto', padding: '0 24px', ...style }}>
+      {children}
+    </div>
+  );
+}
+
+// ─── DALIVIM MARK SVG ────────────────────────────────────────────────────────
+function DalivimMark({ size = 32, color = 'currentColor' }) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width={size} height={size} style={{ color }}>
+      <g fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M32 8 L54 20 L54 44 L32 56 L10 44 L10 20 Z"/>
+        <path d="M32 8 L32 32 M54 20 L32 32 M54 44 L32 32 M32 56 L32 32 M10 44 L32 32 M10 20 L32 32"/>
+      </g>
+      <g fill="currentColor">
+        <circle cx="32" cy="8" r="5"/>
+        <circle cx="54" cy="20" r="5"/>
+        <circle cx="54" cy="44" r="5"/>
+        <circle cx="32" cy="56" r="5"/>
+        <circle cx="10" cy="44" r="5"/>
+        <circle cx="10" cy="20" r="5"/>
+        <circle cx="32" cy="32" r="6"/>
+      </g>
+    </svg>
+  );
+}
+
+// ─── HEADER ──────────────────────────────────────────────────────────────────
+function Header({ onCta }) {
+  return (
+    <header style={{
+      position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50,
+      background: 'rgba(255,255,255,0.9)', backdropFilter: 'blur(12px)',
+      borderBottom: '1px solid #E4E4E7',
+    }}>
+      <Container style={{ height: 80, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <DalivimMark size={32} color="#0A0A0A"/>
+          <span style={{ fontFamily: "'Space Grotesk'", fontWeight: 500, fontSize: 22, letterSpacing: '-0.012em' }}>Dalivim</span>
+        </div>
+        <nav style={{ display: 'flex', alignItems: 'center', gap: 40, fontSize: 15, fontFamily: "'Inter'" }}>
+          <a href="#how" style={{ color: '#0A0A0A', textDecoration: 'none', opacity: 0.8, transition: 'opacity 180ms' }}
+            onMouseEnter={e=>e.currentTarget.style.opacity=1} onMouseLeave={e=>e.currentTarget.style.opacity=0.8}>
+            Como funciona
+          </a>
+          <a href="#uses" style={{ color: '#0A0A0A', textDecoration: 'none', opacity: 0.8, transition: 'opacity 180ms' }}
+            onMouseEnter={e=>e.currentTarget.style.opacity=1} onMouseLeave={e=>e.currentTarget.style.opacity=0.8}>
+            Usos
+          </a>
+          <a href="#faq" style={{ color: '#0A0A0A', textDecoration: 'none', opacity: 0.8, transition: 'opacity 180ms' }}
+            onMouseEnter={e=>e.currentTarget.style.opacity=1} onMouseLeave={e=>e.currentTarget.style.opacity=0.8}>
+            Perguntas
+          </a>
+        </nav>
+        <Button variant="primary" onClick={onCta}>Criar transação</Button>
+      </Container>
+    </header>
+  );
+}
+
+// ─── HERO ────────────────────────────────────────────────────────────────────
+function Hero({ onPrimary, onSecondary }) {
+  return (
+    <section style={{ paddingTop: 200, paddingBottom: 128 }}>
+      <Container style={{ textAlign: 'center' }}>
+        <h1 style={{
+          fontFamily: "'Space Grotesk'", fontWeight: 500,
+          fontSize: 'clamp(48px, 8vw, 96px)',
+          lineHeight: 1.04, letterSpacing: '-0.022em',
+          margin: '0 auto', maxWidth: 960, color: '#0A0A0A',
+        }}>
+          Medo de não receber?<br/>
+          <span style={{ color: '#71717A' }}>Sem problema. A gente garante.</span>
+        </h1>
+        <p style={{
+          fontFamily: "'Inter'", fontSize: 19, fontWeight: 400,
+          color: '#71717A', lineHeight: 1.6,
+          maxWidth: 640, margin: '32px auto 0',
+        }}>
+          Uma camada de segurança para freelancers e negociações online. O pagamento fica seguro até as duas partes cumprirem o acordo.
+        </p>
+        <div style={{ marginTop: 48, display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}>
+          <Button variant="primary" onClick={onPrimary} style={{ padding: '16px 32px', fontSize: 16 }}>Crie uma transação segura</Button>
+          <Button variant="outlined" onClick={onSecondary} style={{ padding: '14.5px 30.5px', fontSize: 16 }}>Veja como funciona</Button>
+        </div>
+      </Container>
+    </section>
+  );
+}
+
+function TrustStrip() {
+  const items = [
+    { icon: 'shield-check', label: 'Feito para negociações de confiança' },
+    { icon: 'banknote',     label: 'Pagamento simples com Pix' },
+    { icon: 'check-circle', label: 'Liberação clara e transparente' },
+    { icon: 'lock',         label: 'Proteção para os dois lados' },
+  ];
+  return (
+    <section style={{ padding: '48px 0', borderTop: '1px solid #E4E4E7', borderBottom: '1px solid #E4E4E7' }}>
+      <Container style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 24, textAlign: 'center' }}>
+        {items.map(it => (
+          <div key={it.label} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
+            <Icon name={it.icon} size={24} color="#71717A"/>
+            <span style={{ fontFamily: "'Inter'", fontWeight: 500, fontSize: 15, color: '#0A0A0A' }}>{it.label}</span>
+          </div>
+        ))}
+      </Container>
+    </section>
+  );
+}
+
+// ─── HOW IT WORKS ────────────────────────────────────────────────────────────
+const HIW_STATES = [
+  {
+    id: 'received', chip: 'Pagamento recebido', title: 'Fundos protegidos',
+    caption: 'O dinheiro do comprador ficou em custódia. Nada se move até você entregar.',
+    stepTitle: 'Comprador paga', stepBody: 'O valor combinado entra em custódia no mesmo instante.',
+  },
+  {
+    id: 'awaiting', chip: 'Aguardando entrega', title: 'Tudo pronto para começar',
+    caption: 'Você pode trabalhar com tranquilidade. O pagamento já está garantido.',
+    stepTitle: 'Entrega em andamento', stepBody: 'Os fundos seguem protegidos enquanto o combinado é cumprido.',
+  },
+  {
+    id: 'released', chip: 'Liberado ao vendedor', title: 'Pagamento concluído',
+    caption: 'Entrega confirmada pelos dois lados. O dinheiro foi liberado.',
+    stepTitle: 'Dinheiro liberado', stepBody: 'Assim que a entrega é confirmada, o valor vai direto para você.',
+  },
+];
+const HIW_DWELL = 3200;
+
+function useSlowState() {
+  const [idx, setIdx] = useState(0);
+  const [autoplay, setAutoplay] = useState(true);
+  const timerRef = useRef(null);
+  const mountedRef = useRef(true);
+  useEffect(() => { mountedRef.current = true; return () => { mountedRef.current = false; clearTimeout(timerRef.current); }; }, []);
+  useEffect(() => {
+    if (!autoplay) return;
+    clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => { if (mountedRef.current) setIdx(i => (i + 1) % HIW_STATES.length); }, HIW_DWELL);
+    return () => clearTimeout(timerRef.current);
+  }, [idx, autoplay]);
+  const jumpTo = i => { clearTimeout(timerRef.current); setIdx(i); setAutoplay(true); };
+  return { idx, jumpTo };
+}
+
+function CalmSteps({ idx, onJump }) {
+  return (
+    <ol style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
+      {HIW_STATES.map((s, i) => {
+        const active = i === idx; const done = i < idx;
+        return (
+          <li key={s.id}>
+            <button onClick={() => onJump(i)} style={{
+              width: '100%', textAlign: 'left', background: 'transparent', border: 'none',
+              display: 'grid', gridTemplateColumns: '18px 1fr', gap: 20, padding: '22px 0',
+              borderBottom: i < HIW_STATES.length - 1 ? '1px solid #E4E4E7' : 'none',
+              cursor: 'pointer', opacity: active ? 1 : 0.45,
+              transition: 'opacity 320ms cubic-bezier(0.2,0.6,0.2,1)',
+            }}>
+              <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', paddingTop: 8 }}>
+                <span style={{
+                  width: active ? 12 : 8, height: active ? 12 : 8, borderRadius: 9999,
+                  background: active || done ? '#0A0A0A' : '#D4D4D8',
+                  transition: 'all 320ms cubic-bezier(0.2,0.6,0.2,1)',
+                }}/>
+              </div>
+              <div>
+                <div style={{ fontFamily: "'Space Grotesk'", fontWeight: 500, fontSize: 22, letterSpacing: '-0.012em', color: '#0A0A0A', marginBottom: 6 }}>{s.stepTitle}</div>
+                <div style={{ fontFamily: "'Inter'", fontSize: 15, lineHeight: 1.55, color: '#52525B' }}>{s.stepBody}</div>
+              </div>
+            </button>
+          </li>
+        );
+      })}
+    </ol>
+  );
+}
+
+function ShieldGlyph({ active, released }) {
+  const color = released ? '#7FD1A8' : active ? '#A8C2EA' : 'rgba(255,255,255,0.45)';
+  return (
+    <svg width="40" height="40" viewBox="0 0 40 40" fill="none" style={{ transition: 'color 500ms', color }}>
+      <path d="M20 5 L33 9 V20 C33 28 27 33 20 35 C13 33 7 28 7 20 V9 Z" stroke="currentColor" strokeWidth="1.3" fill="none" strokeLinejoin="round"/>
+      {released
+        ? <path d="M14 20 L18.5 24.5 L26 16" stroke="currentColor" strokeWidth="1.6" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+        : <path d="M16 17 h8 M16 21 h8 M16 25 h5" stroke="currentColor" strokeWidth="1.2" fill="none" strokeLinecap="round" opacity="0.7"/>
+      }
+    </svg>
+  );
+}
+
+function ProgressTrack({ idx }) {
+  return (
+    <div style={{ display: 'flex', gap: 6, marginTop: 4 }}>
+      {[0, 1, 2].map(i => (
+        <div key={i} style={{
+          flex: 1, height: 3, borderRadius: 2,
+          background: i <= idx ? '#A8C2EA' : 'rgba(255,255,255,0.10)',
+          transition: 'background 600ms cubic-bezier(0.2,0.6,0.2,1)',
+        }}/>
+      ))}
+    </div>
+  );
+}
+
+function TrustCard({ idx }) {
+  const state = HIW_STATES[idx];
+  const released = idx === 2; const active = idx >= 1;
+  return (
+    <div style={{
+      position: 'relative', background: '#141418', color: '#fff',
+      borderRadius: 20, padding: '44px 44px 40px',
+      border: '1px solid rgba(255,255,255,0.08)',
+      display: 'flex', flexDirection: 'column', gap: 36,
+      minHeight: 520, overflow: 'hidden',
+    }}>
+      <div aria-hidden style={{ position: 'absolute', inset: 0, pointerEvents: 'none', background: 'radial-gradient(600px 320px at 80% 0%, rgba(30,75,160,0.16), transparent 70%)' }}/>
+      <div style={{ position: 'relative', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <span style={{
+          display: 'inline-flex', alignItems: 'center', gap: 10,
+          padding: '8px 16px', background: 'rgba(255,255,255,0.06)',
+          border: '1px solid rgba(255,255,255,0.10)', borderRadius: 9999,
+          fontFamily: "'Inter'", fontSize: 13, fontWeight: 500, color: '#fff', letterSpacing: '-0.005em',
+          transition: 'all 500ms cubic-bezier(0.2,0.6,0.2,1)',
+        }}>
+          <span style={{
+            width: 8, height: 8, borderRadius: 9999,
+            background: released ? '#7FD1A8' : '#A8C2EA',
+            boxShadow: `0 0 0 4px ${released ? 'rgba(127,209,168,0.18)' : 'rgba(168,194,234,0.18)'}`,
+            transition: 'all 500ms',
+          }}/>
+          {state.chip}
+        </span>
+        <span style={{ fontFamily: "'Inter'", fontSize: 13, color: 'rgba(255,255,255,0.5)' }}>
+          Para <span style={{ color: 'rgba(255,255,255,0.85)' }}>Ana Ribeiro</span>
+        </span>
+      </div>
+      <div style={{ position: 'relative' }}>
+        <div style={{ fontFamily: "'Inter'", fontSize: 13, color: 'rgba(255,255,255,0.5)', marginBottom: 10, letterSpacing: '-0.005em' }}>Valor em custódia</div>
+        <div style={{ fontFamily: "'Space Grotesk'", fontWeight: 500, fontSize: 64, lineHeight: 1, letterSpacing: '-0.028em', color: '#fff' }}>R$ 2.480,00</div>
+      </div>
+      <div style={{
+        position: 'relative', display: 'flex', alignItems: 'center', gap: 20,
+        padding: '24px 24px', background: 'rgba(255,255,255,0.03)',
+        border: '1px solid rgba(255,255,255,0.08)', borderRadius: 14,
+        transition: 'all 500ms cubic-bezier(0.2,0.6,0.2,1)',
+      }}>
+        <div style={{
+          width: 56, height: 56, borderRadius: 14,
+          background: released ? 'rgba(127,209,168,0.10)' : 'rgba(168,194,234,0.08)',
+          border: `1px solid ${released ? 'rgba(127,209,168,0.28)' : 'rgba(168,194,234,0.22)'}`,
+          display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+          transition: 'all 500ms cubic-bezier(0.2,0.6,0.2,1)',
+        }}>
+          <ShieldGlyph active={active} released={released}/>
+        </div>
+        <div style={{ minWidth: 0 }}>
+          <div key={state.id + '-title'} style={{ fontFamily: "'Space Grotesk'", fontWeight: 500, fontSize: 22, letterSpacing: '-0.014em', color: '#fff', marginBottom: 4, animation: 'dv-fade-in 520ms cubic-bezier(0.2,0.6,0.2,1) both' }}>{state.title}</div>
+          <div key={state.id + '-caption'} style={{ fontFamily: "'Inter'", fontSize: 14, lineHeight: 1.55, color: 'rgba(255,255,255,0.65)', animation: 'dv-fade-in 620ms cubic-bezier(0.2,0.6,0.2,1) both' }}>{state.caption}</div>
+        </div>
+      </div>
+      <div style={{ position: 'relative', marginTop: 'auto' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: "'Inter'", fontSize: 12, color: 'rgba(255,255,255,0.55)', marginBottom: 10, letterSpacing: '-0.005em' }}>
+          <span>Pagamento</span><span>Entrega</span><span>Liberação</span>
+        </div>
+        <ProgressTrack idx={idx}/>
+      </div>
+    </div>
+  );
+}
+
+function HowItWorks() {
+  const { idx, jumpTo } = useSlowState();
+  return (
+    <section id="how" style={{ padding: '128px 0', background: '#F4F4F5', borderBottom: '1px solid #E4E4E7' }}>
+      <Container>
+        <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 64, gap: 24, flexWrap: 'wrap' }}>
+          <div>
+            <div style={{ fontFamily: "'Inter'", fontSize: 12, fontWeight: 500, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#71717A', marginBottom: 14 }}>Como funciona</div>
+            <h2 style={{ fontFamily: "'Space Grotesk'", fontWeight: 500, fontSize: 'clamp(40px, 5vw, 64px)', lineHeight: 1.02, letterSpacing: '-0.024em', margin: 0, color: '#0A0A0A' }}>
+              Seu dinheiro, protegido.<br/><span style={{ color: '#71717A' }}>Do pagamento até a entrega.</span>
+            </h2>
+          </div>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.2fr', gap: 72, alignItems: 'start' }}>
+          <CalmSteps idx={idx} onJump={jumpTo}/>
+          <TrustCard idx={idx}/>
+        </div>
+      </Container>
+    </section>
+  );
+}
+
+// ─── CTA INLINE BAND ─────────────────────────────────────────────────────────
+function CtaInlineBand({ onCta, eyebrow, title, sub, cta }) {
+  return (
+    <section style={{ padding: '72px 0', background: '#fff', borderBottom: '1px solid #E4E4E7' }}>
+      <Container>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 40, flexWrap: 'wrap' }}>
+          <div style={{ maxWidth: 680 }}>
+            {eyebrow && <div style={{ fontFamily: "'Inter'", fontSize: 12, fontWeight: 500, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#71717A', marginBottom: 10 }}>{eyebrow}</div>}
+            <h3 style={{ fontFamily: "'Space Grotesk'", fontWeight: 500, fontSize: 32, letterSpacing: '-0.014em', lineHeight: 1.12, margin: '0 0 8px', color: '#0A0A0A' }}>{title}</h3>
+            {sub && <p style={{ fontFamily: "'Inter'", fontSize: 16, color: '#71717A', margin: 0, lineHeight: 1.55 }}>{sub}</p>}
+          </div>
+          <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+            <Button variant="primary" onClick={onCta}>{cta || 'Criar transação'}<Icon name="arrow-right" size={16}/></Button>
+          </div>
+        </div>
+      </Container>
+    </section>
+  );
+}
+
+// ─── SCENARIOS ───────────────────────────────────────────────────────────────
+function ScenarioArt({ kind }) {
+  const ink = '#0A0A0A'; const line = '#D4D4D8'; const muted = '#71717A';
+  if (kind === 'website') return (
+    <svg viewBox="0 0 260 140" style={{ width: '100%', height: '100%' }}>
+      <g transform="translate(28 22)">
+        <rect x="0" y="0" width="180" height="96" rx="4" fill="#fff" stroke={line}/>
+        <line x1="0" y1="16" x2="180" y2="16" stroke={line}/>
+        <circle cx="8" cy="8" r="1.6" fill={line}/><circle cx="14" cy="8" r="1.6" fill={line}/><circle cx="20" cy="8" r="1.6" fill={line}/>
+        <rect x="10" y="26" width="60" height="6" rx="1" fill={ink}/>
+        <rect x="10" y="36" width="100" height="3" rx="1" fill={line}/><rect x="10" y="42" width="78" height="3" rx="1" fill={line}/>
+        <rect x="10" y="56" width="40" height="24" rx="2" fill="#FAFAFA" stroke={line}/>
+        <rect x="56" y="56" width="40" height="24" rx="2" fill="#FAFAFA" stroke={line}/>
+        <rect x="102" y="56" width="40" height="24" rx="2" fill="#FAFAFA" stroke={line}/>
+      </g>
+      <path d="M212 92 l6 2 l-2.4 1.6 l1.4 3.2 l-1.8 0.8 l-1.4 -3.2 l-2.4 1.6 z" fill={ink}/>
+    </svg>
+  );
+  if (kind === 'stranger') return (
+    <svg viewBox="0 0 260 140" style={{ width: '100%', height: '100%' }}>
+      <g transform="translate(24 22)">
+        <rect x="0" y="4" width="118" height="32" rx="12" fill="#fff" stroke={line}/>
+        <rect x="10" y="14" width="70" height="3" rx="1" fill={line}/><rect x="10" y="22" width="48" height="3" rx="1" fill={line}/>
+        <rect x="90" y="52" width="118" height="38" rx="12" fill={ink}/>
+        <rect x="102" y="63" width="72" height="3" rx="1" fill="#fff" opacity="0.6"/>
+        <rect x="102" y="71" width="94" height="3" rx="1" fill="#fff" opacity="0.9"/>
+        <rect x="102" y="79" width="52" height="3" rx="1" fill="#fff" opacity="0.4"/>
+        <circle cx="218" cy="20" r="12" fill="#fff" stroke={line}/>
+        <text x="218" y="25" textAnchor="middle" fontFamily="Space Grotesk" fontWeight="500" fontSize="14" fill={muted}>?</text>
+      </g>
+    </svg>
+  );
+  if (kind === 'specialist') return (
+    <svg viewBox="0 0 260 140" style={{ width: '100%', height: '100%' }}>
+      <g transform="translate(40 16)">
+        <rect x="0" y="0" width="124" height="108" rx="4" fill="#fff" stroke={line}/>
+        <rect x="14" y="16" width="44" height="5" rx="1" fill={ink}/>
+        <rect x="14" y="28" width="90" height="3" rx="1" fill={line}/><rect x="14" y="34" width="78" height="3" rx="1" fill={line}/><rect x="14" y="40" width="86" height="3" rx="1" fill={line}/>
+        <rect x="14" y="54" width="96" height="22" rx="3" fill="#FAFAFA" stroke={line}/>
+        <rect x="20" y="60" width="24" height="4" rx="1" fill={muted}/><rect x="20" y="68" width="40" height="5" rx="1" fill={ink}/>
+        <line x1="14" y1="92" x2="70" y2="92" stroke={ink} strokeWidth="1.2"/>
+        <path d="M16 89 q 8 -6 14 0 t 14 0 t 14 0" fill="none" stroke={ink} strokeWidth="1"/>
+        <rect x="80" y="88" width="26" height="6" rx="1" fill={line}/>
+      </g>
+      <g transform="translate(176 88)">
+        <rect x="0" y="0" width="44" height="18" rx="2" fill="none" stroke={ink} strokeWidth="1" strokeDasharray="2 2"/>
+        <text x="22" y="12" textAnchor="middle" fontFamily="Inter" fontWeight="500" fontSize="8" letterSpacing="0.1em" fill={ink}>PROPOSTA</text>
+      </g>
+    </svg>
+  );
+  if (kind === 'direct') return (
+    <svg viewBox="0 0 260 140" style={{ width: '100%', height: '100%' }}>
+      <g transform="translate(20 30)">
+        <rect x="0" y="10" width="80" height="56" rx="4" fill="#fff" stroke={line}/>
+        <circle cx="20" cy="28" r="7" fill="#FAFAFA" stroke={line}/>
+        <rect x="34" y="25" width="36" height="3" rx="1" fill={ink}/><rect x="34" y="32" width="28" height="3" rx="1" fill={line}/>
+        <rect x="12" y="48" width="56" height="10" rx="2" fill="#FAFAFA" stroke={line}/>
+        <rect x="140" y="10" width="80" height="56" rx="4" fill="#fff" stroke={line}/>
+        <circle cx="160" cy="28" r="7" fill={ink}/>
+        <rect x="174" y="25" width="36" height="3" rx="1" fill={ink}/><rect x="174" y="32" width="28" height="3" rx="1" fill={line}/>
+        <rect x="152" y="48" width="56" height="10" rx="2" fill={ink}/>
+        <line x1="80" y1="38" x2="140" y2="38" stroke={ink} strokeWidth="1"/>
+        <rect x="102" y="32" width="16" height="12" rx="2" fill="#fff" stroke={ink}/>
+        <path d="M106 38 l3 2 l5 -4" fill="none" stroke={ink} strokeWidth="1.2"/>
+      </g>
+    </svg>
+  );
+  return null;
+}
+
+function ScenarioCard({ scenario, idx, selected, onSelect }) {
+  const [hover, setHover] = useState(false);
+  return (
+    <button onClick={() => onSelect(idx)} onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)} style={{
+      position: 'relative', display: 'flex', flexDirection: 'column',
+      background: '#fff', border: `1px solid ${selected ? '#0A0A0A' : hover ? '#A1A1AA' : '#E4E4E7'}`,
+      borderRadius: 14, padding: 0, cursor: 'pointer', textAlign: 'left',
+      transform: hover || selected ? 'translateY(-3px)' : 'translateY(0)',
+      transition: 'transform 260ms cubic-bezier(0.2,0.6,0.2,1), border-color 200ms',
+      overflow: 'hidden', minHeight: 280,
+    }}>
+      <div style={{ position: 'relative', background: '#FAFAFA', borderBottom: '1px solid #E4E4E7', padding: '24px 24px 16px', height: 168, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <ScenarioArt kind={scenario.kind}/>
+        <div style={{ position: 'absolute', top: 14, left: 16, fontFamily: "ui-monospace, 'SF Mono', Menlo, monospace", fontSize: 11, color: '#A1A1AA', letterSpacing: '0.08em' }}>0{idx + 1}</div>
+        {selected && <div style={{ position: 'absolute', top: 14, right: 14, width: 22, height: 22, borderRadius: 9999, background: '#0A0A0A', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Icon name="check" size={12}/></div>}
+      </div>
+      <div style={{ padding: '22px 24px 24px', display: 'flex', flexDirection: 'column', gap: 6 }}>
+        <div style={{ fontFamily: "'Inter'", fontSize: 11, fontWeight: 500, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#71717A' }}>{scenario.label}</div>
+        <div style={{ fontFamily: "'Space Grotesk'", fontWeight: 500, fontSize: 19, letterSpacing: '-0.012em', lineHeight: 1.25, color: '#0A0A0A' }}>{scenario.title}</div>
+      </div>
+    </button>
+  );
+}
+
+function Scenarios({ onCta }) {
+  const scenarios = [
+    { kind: 'website',    label: 'Para freelancers',      title: 'Criando um site para um cliente.' },
+    { kind: 'stranger',   label: 'Pessoa a pessoa',       title: 'Comprando algo de um desconhecido.' },
+    { kind: 'specialist', label: 'Serviços contratados',  title: 'Contratando um especialista para um projeto.' },
+    { kind: 'direct',     label: 'Acordo direto',         title: 'Fechando um acordo direto com alguém.' },
+  ];
+  const [selected, setSelected] = useState(null);
+  return (
+    <section id="uses" style={{ padding: '128px 0', background: '#fff', borderBottom: '1px solid #E4E4E7' }}>
+      <Container>
+        <div style={{ maxWidth: 720, marginBottom: 56 }}>
+          <div style={{ fontFamily: "'Inter'", fontSize: 12, fontWeight: 500, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#71717A', marginBottom: 14 }}>Seus cenários</div>
+          <h2 style={{ fontFamily: "'Space Grotesk'", fontWeight: 500, fontSize: 'clamp(40px, 5vw, 64px)', letterSpacing: '-0.022em', lineHeight: 1.02, margin: '0 0 20px', color: '#0A0A0A' }}>
+            Reconheça sua situação.<br/><span style={{ color: '#71717A' }}>A Dalivim cabe aqui.</span>
+          </h2>
+          <p style={{ fontFamily: "'Inter'", fontSize: 17, color: '#71717A', lineHeight: 1.55, margin: 0, maxWidth: 560 }}>
+            Selecione o contexto que descreve o seu próximo acordo. O fluxo de custódia se adapta ao tipo.
+          </p>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16, marginBottom: 40 }}>
+          {scenarios.map((s, i) => <ScenarioCard key={s.kind} scenario={s} idx={i} selected={selected === i} onSelect={setSelected}/>)}
+        </div>
+        {selected !== null && (
+          <div style={{
+            display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+            gap: 20, padding: '18px 24px', background: '#0A0A0A', color: '#fff',
+            borderRadius: 14, animation: 'dv-slide-up 320ms cubic-bezier(0.2,0.6,0.2,1)',
+          }}>
+            <div>
+              <div style={{ fontFamily: "'Inter'", fontSize: 11, fontWeight: 500, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.5)', marginBottom: 4 }}>Cenário selecionado</div>
+              <div style={{ fontFamily: "'Space Grotesk'", fontSize: 17, fontWeight: 500, letterSpacing: '-0.01em' }}>{scenarios[selected].title}</div>
+            </div>
+            <Button variant="primary" onClick={onCta}>Criar transação<Icon name="arrow-right" size={14}/></Button>
+          </div>
+        )}
+      </Container>
+    </section>
+  );
+}
+
+// ─── ORBITS & STARFIELD ───────────────────────────────────────────────────────
+function Starfield() {
+  const stars = useMemo(() => {
+    let seed = 7;
+    const rand = () => { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; };
+    const out = [];
+    for (let i = 0; i < 180; i++) {
+      const isAnchor = rand() < 0.04;
+      out.push({ x: rand() * 100, y: rand() * 100, r: isAnchor ? 0.9 + rand() * 0.6 : 0.35 + rand() * 0.4, o: isAnchor ? 0.5 + rand() * 0.25 : 0.08 + rand() * 0.18, k: isAnchor });
+    }
+    return out;
+  }, []);
+  const [tilt, setTilt] = useState({ x: 0, y: 0 });
+  useEffect(() => {
+    const onMove = e => { const dx = (e.clientX / window.innerWidth - 0.5) * 2; const dy = (e.clientY / window.innerHeight - 0.5) * 2; setTilt({ x: dx, y: dy }); };
+    window.addEventListener('mousemove', onMove);
+    return () => window.removeEventListener('mousemove', onMove);
+  }, []);
+  return (
+    <svg viewBox="0 0 100 100" preserveAspectRatio="none" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', transform: `translate3d(${tilt.x * -4}px, ${tilt.y * -4}px, 0)`, transition: 'transform 1400ms cubic-bezier(0.2,0.6,0.2,1)', pointerEvents: 'none' }}>
+      {stars.map((s, i) => (
+        <g key={i} opacity={s.o}>
+          <circle cx={s.x} cy={s.y} r={s.r * 0.15} fill="#fff"/>
+          {s.k && <g stroke="#fff" strokeWidth="0.04" opacity="0.55"><line x1={s.x - s.r * 0.6} y1={s.y} x2={s.x + s.r * 0.6} y2={s.y}/><line x1={s.x} y1={s.y - s.r * 0.6} x2={s.x} y2={s.y + s.r * 0.6}/></g>}
+        </g>
+      ))}
+    </svg>
+  );
+}
+
+function Orbits() {
+  return (
+    <svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none' }}>
+      <g className="dv-orbit-a"><ellipse cx="800" cy="450" rx="1100" ry="300" transform="rotate(-18 800 450)" fill="none" stroke="#1E4BA0" strokeWidth="0.8" opacity="0.38"/></g>
+      <g className="dv-orbit-b"><ellipse cx="800" cy="450" rx="900" ry="220" transform="rotate(22 800 450)" fill="none" stroke="#1E4BA0" strokeWidth="0.6" opacity="0.28"/></g>
+      <g className="dv-orbit-c"><ellipse cx="800" cy="450" rx="1280" ry="360" transform="rotate(8 800 450)" fill="none" stroke="#1E4BA0" strokeWidth="0.5" opacity="0.18"/></g>
+    </svg>
+  );
+}
+
+// ─── CTA BAR DARK ────────────────────────────────────────────────────────────
+function CtaBarDark({ onCta }) {
+  return (
+    <section style={{ position: 'relative', padding: '120px 0', background: '#0A0A0A', color: '#fff', overflow: 'hidden', borderTop: '1px solid rgba(255,255,255,0.06)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+      <Orbits/><Starfield/>
+      <div style={{ position: 'relative', zIndex: 2 }}>
+        <Container>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 64, alignItems: 'center' }}>
+            <div>
+              <div style={{ fontFamily: "'Inter'", fontSize: 12, fontWeight: 500, letterSpacing: '0.18em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.55)', marginBottom: 18 }}>Pronto em 60 segundos</div>
+              <h2 style={{ fontFamily: "'Space Grotesk'", fontWeight: 500, fontSize: 'clamp(40px, 5.2vw, 64px)', lineHeight: 1.02, letterSpacing: '-0.026em', margin: '0 0 24px', color: '#ffffff' }}>
+                <span style={{ display: 'block', color: '#ffffff' }}>Proteja seu próximo pagamento.</span>
+                <span style={{ display: 'block', color: '#1E4BA0' }}>Antes de ele virar problema.</span>
+              </h2>
+              <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap', fontFamily: "'Inter'", fontSize: 14, color: 'rgba(255,255,255,0.65)' }}>
+                {['Sem mensalidade', 'Sem cartão', 'Pague só se usar'].map(t => (
+                  <span key={t} style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}><Icon name="check" size={14} color="#fff"/>{t}</span>
+                ))}
+              </div>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, minWidth: 240 }}>
+              <Button variant="primary" onClick={onCta} style={{ padding: '18px 32px', fontSize: 16 }}>Criar transação agora<Icon name="arrow-right" size={16}/></Button>
+              <Button variant="ghostDark" onClick={onCta}>Ver como funciona</Button>
+            </div>
+          </div>
+        </Container>
+      </div>
+    </section>
+  );
+}
+
+// ─── WHY CHOOSE ──────────────────────────────────────────────────────────────
+function StatePanel({ txId, amount, status, statusTone, lines, footer }) {
+  const tones = { protected: { chip: '#1E4BA0', label: 'PROTEGIDO' }, awaiting: { chip: '#B45309', label: 'AGUARDANDO' }, active: { chip: '#1E4BA0', label: 'ATIVA' }, released: { chip: '#1E8A5A', label: 'LIBERADA' } };
+  const tone = tones[statusTone] || tones.protected;
+  return (
+    <div style={{ background: '#0A0A0A', color: '#fff', border: '1px solid #1C1C20', borderRadius: 10, padding: '18px 20px', fontFamily: "'Inter', sans-serif" }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
+        <span style={{ fontFamily: "ui-monospace, 'SF Mono', Menlo, monospace", fontSize: 11, color: 'rgba(255,255,255,0.45)', letterSpacing: '0.1em' }}>{txId}</span>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '4px 10px', border: `1px solid ${tone.chip}55`, background: `${tone.chip}14`, borderRadius: 9999, fontSize: 10, fontWeight: 600, letterSpacing: '0.14em', color: '#fff' }}>
+          <span style={{ width: 6, height: 6, borderRadius: 9999, background: tone.chip }}/>{tone.label}
+        </span>
+      </div>
+      <div style={{ fontFamily: "'Space Grotesk'", fontWeight: 500, fontSize: 26, letterSpacing: '-0.018em', lineHeight: 1, marginBottom: 4 }}>{amount}</div>
+      <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.6)', marginBottom: 16 }}>{status}</div>
+      {lines && lines.length > 0 && (
+        <div style={{ borderTop: '1px solid #1C1C20', paddingTop: 12, display: 'flex', flexDirection: 'column', gap: 7 }}>
+          {lines.map((ln, i) => (
+            <div key={i} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: 'rgba(255,255,255,0.7)' }}>
+              <span style={{ color: 'rgba(255,255,255,0.45)' }}>{ln.k}</span>
+              <span style={{ color: ln.emphasis ? '#fff' : 'rgba(255,255,255,0.75)', fontFamily: ln.mono ? "ui-monospace, 'SF Mono', Menlo, monospace" : "'Inter'", letterSpacing: ln.mono ? '0.04em' : '0' }}>{ln.v}</span>
+            </div>
+          ))}
+        </div>
+      )}
+      {footer && <div style={{ marginTop: 14, paddingTop: 12, borderTop: '1px solid #1C1C20', display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: 'rgba(255,255,255,0.6)' }}>{footer}</div>}
+    </div>
+  );
+}
+
+function MediatorDiagram() {
+  return (
+    <div style={{ background: '#0A0A0A', border: '1px solid #1C1C20', borderRadius: 10, padding: '22px 20px', display: 'flex', flexDirection: 'column', gap: 14 }}>
+      <div style={{ fontFamily: "ui-monospace, 'SF Mono', Menlo, monospace", fontSize: 11, color: 'rgba(255,255,255,0.45)', letterSpacing: '0.1em' }}>TX-9821-VRB3</div>
+      <svg viewBox="0 0 320 68" width="100%" style={{ display: 'block' }}>
+        <circle cx="34" cy="34" r="14" fill="none" stroke="#fff" strokeWidth="1.2"/>
+        <text x="34" y="38" textAnchor="middle" fontFamily="Space Grotesk" fontSize="12" fontWeight="500" fill="#fff">C</text>
+        <text x="34" y="62" textAnchor="middle" fontFamily="Inter" fontSize="9" fill="rgba(255,255,255,0.5)" letterSpacing="0.12em">COMPRADOR</text>
+        <line x1="52" y1="34" x2="130" y2="34" stroke="#1E4BA0" strokeWidth="1" strokeDasharray="3 3"/>
+        <rect x="130" y="20" width="60" height="28" rx="3" fill="#1E4BA0" stroke="#1E4BA0"/>
+        <text x="160" y="38" textAnchor="middle" fontFamily="Space Grotesk" fontSize="11" fontWeight="500" fill="#fff" letterSpacing="0.04em">DALIVIM</text>
+        <text x="160" y="62" textAnchor="middle" fontFamily="Inter" fontSize="9" fill="rgba(255,255,255,0.5)" letterSpacing="0.12em">CUSTÓDIA</text>
+        <line x1="190" y1="34" x2="268" y2="34" stroke="#1E4BA0" strokeWidth="1" strokeDasharray="3 3"/>
+        <circle cx="286" cy="34" r="14" fill="none" stroke="#fff" strokeWidth="1.2"/>
+        <text x="286" y="38" textAnchor="middle" fontFamily="Space Grotesk" fontSize="12" fontWeight="500" fill="#fff">V</text>
+        <text x="286" y="62" textAnchor="middle" fontFamily="Inter" fontSize="9" fill="rgba(255,255,255,0.5)" letterSpacing="0.12em">VENDEDOR</text>
+      </svg>
+      <div style={{ borderTop: '1px solid #1C1C20', paddingTop: 12, display: 'flex', justifyContent: 'space-between', fontSize: 12, color: 'rgba(255,255,255,0.7)' }}>
+        <span style={{ color: 'rgba(255,255,255,0.45)' }}>Acordo ativo</span>
+        <span style={{ fontFamily: "ui-monospace, 'SF Mono', Menlo, monospace", letterSpacing: '0.04em', color: '#fff' }}>2 partes · 1 contrato</span>
+      </div>
+    </div>
+  );
+}
+
+function WhyChoose() {
+  const cards = [
+    {
+      number: '01', situation: 'Você pagou… e a outra pessoa sumiu?',
+      resolution: 'Com Dalivim, os fundos só são liberados depois da entrega. Se algo der errado, o dinheiro volta pra você.',
+      panel: <StatePanel txId="TX-4193-KM7P" amount="R$ 1.500,00" status="Aguardando entrega · fundos retidos" statusTone="protected" lines={[{ k: 'Método', v: 'Pix', mono: false, emphasis: true }, { k: 'Custódia', v: 'ativa · 3d restantes', mono: true }, { k: 'Reembolso', v: 'disponível', mono: true, emphasis: true }]}/>,
+    },
+    {
+      number: '02', situation: 'Já entregou o trabalho e teve que correr atrás do pagamento?',
+      resolution: 'Aqui, o pagamento é garantido antes de você começar. Dinheiro na custódia é dinheiro confirmado.',
+      panel: <StatePanel txId="TX-2774-BN2L" amount="R$ 2.480,00" status="Pagamento recebido · aguardando entrega" statusTone="active" lines={[{ k: 'Comprador', v: 'João P. — confirmado', emphasis: true }, { k: 'Recebido', v: '17 abr · 14:22', mono: true }, { k: 'Status', v: 'pronto para iniciar', mono: true, emphasis: true }]} footer={<><span style={{ width: 7, height: 7, borderRadius: 9999, background: '#1E8A5A', boxShadow: '0 0 0 3px rgba(30,138,90,0.22)' }}/><span>Você pode começar o trabalho com segurança.</span></>}/>,
+    },
+    {
+      number: '03', situation: 'Fazer negócio com estranhos sempre é um risco.',
+      resolution: 'Dalivim fica no meio, garantindo que os dois lados cumpram o combinado. Neutro. Verificável. Irreversível.',
+      panel: <MediatorDiagram/>,
+    },
+  ];
+  return (
+    <section style={{ padding: '140px 0 128px', background: '#fff', borderBottom: '1px solid #E4E4E7' }}>
+      <Container style={{ maxWidth: 1200 }}>
+        <div style={{ maxWidth: 860, marginBottom: 80 }}>
+          <div style={{ fontFamily: "'Inter'", fontSize: 12, fontWeight: 500, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#71717A', marginBottom: 20 }}>O problema real</div>
+          <h2 style={{ fontFamily: "'Space Grotesk'", fontWeight: 500, fontSize: 'clamp(42px, 5.2vw, 72px)', lineHeight: 1.02, letterSpacing: '-0.028em', margin: '0 0 20px', color: '#0A0A0A' }}>
+            O problema nunca foi o pagamento.<br/><span style={{ color: '#71717A' }}>Foi confiar no outro lado.</span>
+          </h2>
+          <p style={{ fontFamily: "'Inter'", fontSize: 18, lineHeight: 1.55, color: '#52525B', margin: 0, maxWidth: 620 }}>
+            Acordos não falham por falta de boas intenções. Falham por falta de garantias.
+          </p>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20 }}>
+          {cards.map(c => (
+            <article key={c.number} style={{ background: '#FAFAFA', border: '1px solid #E4E4E7', borderRadius: 14, padding: 28, display: 'flex', flexDirection: 'column', gap: 24, transition: 'border-color 220ms, background 220ms, transform 220ms', cursor: 'default' }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = '#0A0A0A'; e.currentTarget.style.background = '#fff'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = '#E4E4E7'; e.currentTarget.style.background = '#FAFAFA'; e.currentTarget.style.transform = 'translateY(0)'; }}>
+              <div>
+                <div style={{ fontFamily: "ui-monospace, 'SF Mono', Menlo, monospace", fontSize: 11, color: '#A1A1AA', letterSpacing: '0.12em', marginBottom: 18 }}>{c.number}</div>
+                <h3 style={{ fontFamily: "'Space Grotesk'", fontWeight: 500, fontSize: 24, lineHeight: 1.18, letterSpacing: '-0.014em', margin: 0, color: '#0A0A0A' }}>{c.situation}</h3>
+              </div>
+              {c.panel}
+              <div style={{ borderTop: '1px solid #E4E4E7', paddingTop: 20, display: 'flex', gap: 14, alignItems: 'flex-start' }}>
+                <div style={{ width: 22, height: 22, borderRadius: 9999, background: '#0A0A0A', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><Icon name="check" size={12} strokeWidth={2.5}/></div>
+                <p style={{ fontFamily: "'Inter'", fontSize: 15, lineHeight: 1.55, color: '#27272A', margin: 0 }}>{c.resolution}</p>
+              </div>
+            </article>
+          ))}
+        </div>
+      </Container>
+    </section>
+  );
+}
+
+// ─── FAQ ─────────────────────────────────────────────────────────────────────
+function FaqRow({ item, index, isOpen, onToggle }) {
+  const [hover, setHover] = useState(false);
+  return (
+    <div style={{ borderBottom: '1px solid #E4E4E7', transition: 'background 200ms', background: hover && !isOpen ? '#FAFAFA' : 'transparent' }} onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
+      <button onClick={onToggle} style={{ width: '100%', display: 'grid', gridTemplateColumns: '64px 1fr 32px', alignItems: 'center', gap: 24, padding: '28px 0', background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left' }} aria-expanded={isOpen}>
+        <span style={{ fontFamily: "ui-monospace, 'SF Mono', Menlo, monospace", fontSize: 12, color: '#A1A1AA', letterSpacing: '0.08em' }}>0{index + 1}</span>
+        <span style={{ fontFamily: "'Space Grotesk'", fontWeight: 500, fontSize: 'clamp(19px, 2.2vw, 24px)', letterSpacing: '-0.012em', lineHeight: 1.3, color: '#0A0A0A' }}>{item.q}</span>
+        <span aria-hidden style={{ justifySelf: 'end', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 28, height: 28, color: '#0A0A0A' }}>
+          <svg width="16" height="16" viewBox="0 0 16 16" style={{ transform: isOpen ? 'rotate(45deg)' : 'rotate(0deg)', transition: 'transform 280ms cubic-bezier(0.2,0.6,0.2,1)' }}>
+            <line x1="8" y1="2" x2="8" y2="14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+            <line x1="2" y1="8" x2="14" y2="8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+          </svg>
+        </span>
+      </button>
+      <div style={{ display: 'grid', gridTemplateRows: isOpen ? '1fr' : '0fr', transition: 'grid-template-rows 320ms cubic-bezier(0.2,0.6,0.2,1)' }}>
+        <div style={{ overflow: 'hidden' }}>
+          <div style={{ paddingLeft: 88, paddingRight: 56, paddingBottom: 32, fontFamily: "'Inter'", fontSize: 17, lineHeight: 1.6, color: '#52525B', maxWidth: 640 }}>{item.a}</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Faq() {
+  const items = [
+    { q: 'E se a outra parte não cumprir?', a: 'O dinheiro não sai da custódia. Ele volta pra quem pagou.' },
+    { q: 'Existe taxa escondida?', a: 'Não. Você só paga quando uma transação é concluída. Sem mensalidade, sem setup.' },
+    { q: 'O dinheiro fica com a Dalivim?', a: 'Fica retido em conta segregada até a confirmação. Nunca transita pela nossa operação.' },
+    { q: 'Funciona para serviços e produtos?', a: 'Funciona para qualquer acordo: serviço, produto, digital, físico, recorrente.' },
+    { q: 'E se houver divergência?', a: 'Os fundos permanecem retidos. Nossa equipe analisa evidências das duas partes e decide.' },
+  ];
+  const [open, setOpen] = useState(0);
+  return (
+    <section id="faq" style={{ padding: '140px 0', background: '#fff', borderTop: '1px solid #E4E4E7' }}>
+      <Container style={{ maxWidth: 860 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.2fr', gap: 80, alignItems: 'start', marginBottom: 80 }}>
+          <div>
+            <div style={{ fontFamily: "'Inter'", fontSize: 12, fontWeight: 500, letterSpacing: '0.18em', textTransform: 'uppercase', color: '#71717A', marginBottom: 16 }}>Sem surpresas</div>
+            <h2 style={{ fontFamily: "'Space Grotesk'", fontWeight: 500, fontSize: 'clamp(40px, 5vw, 64px)', letterSpacing: '-0.024em', lineHeight: 1, margin: 0, color: '#0A0A0A' }}>Antes de você seguir.</h2>
+          </div>
+          <div>
+            <p style={{ fontFamily: "'Inter'", fontSize: 17, lineHeight: 1.6, color: '#52525B', margin: 0, maxWidth: 440 }}>
+              Regras simples. Sem marketing. Se você ler isso e algo ainda parecer escondido, é porque não existe.
+            </p>
+          </div>
+        </div>
+        <div style={{ borderTop: '1px solid #0A0A0A' }}>
+          {items.map((f, i) => <FaqRow key={i} item={f} index={i} isOpen={open === i} onToggle={() => setOpen(open === i ? null : i)}/>)}
+        </div>
+        <div style={{ marginTop: 56, paddingTop: 32, borderTop: '1px solid #E4E4E7', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 16, flexWrap: 'wrap', fontFamily: "'Inter'", fontSize: 14, color: '#71717A' }}>
+          <span>Ainda tem dúvidas?</span>
+          <a href="mailto:contato@dalivim.com.br" style={{ color: '#0A0A0A', textDecoration: 'none', borderBottom: '1px solid #0A0A0A', paddingBottom: 2, fontWeight: 500 }}>Fale conosco →</a>
+        </div>
+      </Container>
+    </section>
+  );
+}
+
+// ─── FINAL CTA ───────────────────────────────────────────────────────────────
+function FinalCta({ onCta }) {
+  return (
+    <section style={{ position: 'relative', background: '#0A0A0A', color: '#fff', padding: '200px 24px 160px', overflow: 'hidden', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+      <Orbits/><Starfield/>
+      <div style={{ position: 'relative', zIndex: 2, maxWidth: 900, margin: '0 auto', textAlign: 'center' }}>
+        <div style={{ fontFamily: "'Inter'", fontSize: 12, fontWeight: 500, letterSpacing: '0.22em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.55)', marginBottom: 32 }}>Pronto para seguir em frente?</div>
+        <h2 style={{ fontFamily: "'Space Grotesk'", fontWeight: 500, fontSize: 'clamp(52px, 8.5vw, 128px)', lineHeight: 0.98, letterSpacing: '-0.032em', margin: '0 0 40px' }}>
+          <span style={{ display: 'block', color: '#fff' }}>Acordos são</span>
+          <span style={{ display: 'block', color: '#1E4BA0' }}>mais seguros aqui.</span>
+        </h2>
+        <p style={{ fontFamily: "'Inter'", fontSize: 18, lineHeight: 1.6, color: 'rgba(255,255,255,0.65)', maxWidth: 560, margin: '0 auto 48px' }}>
+          Crie sua primeira transação em minutos. Dalivim retém, protege e libera — você foca no que importa.
+        </p>
+        <div style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center', gap: 14 }}>
+          <Button variant="primary" onClick={onCta} style={{ padding: '18px 36px', fontSize: 17 }}>Criar sua transação<Icon name="arrow-right" size={18}/></Button>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 12, fontFamily: "'Inter'", fontSize: 13, color: 'rgba(255,255,255,0.45)' }}>
+            <span>Sem taxas escondidas</span>
+            <span style={{ width: 3, height: 3, borderRadius: 9999, background: 'rgba(255,255,255,0.3)' }}/>
+            <span>Sem mensalidade</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── FOOTER ──────────────────────────────────────────────────────────────────
+function Footer() {
+  const columns = [
+    { label: 'Produto', items: [{ name: 'Como funciona', href: '#how' }, { name: 'Para empresas', href: '#' }, { name: 'Para pessoas', href: '#' }, { name: 'Desenvolvedores', href: '#' }] },
+    { label: 'Recursos', items: [{ name: 'Documentação', href: '#' }, { name: 'Segurança', href: '#' }, { name: 'Suporte', href: '#' }, { name: 'Status', href: '#' }] },
+    { label: 'Empresa', items: [{ name: 'Sobre', href: '#' }, { name: 'Carreiras', href: '#' }, { name: 'Contato', href: 'mailto:contato@dalivim.com.br' }, { name: 'Legal', href: '#' }] },
+  ];
+  return (
+    <footer style={{ position: 'relative', background: '#0A0A0A', color: '#fff', borderTop: '1px solid rgba(255,255,255,0.08)', padding: '64px 0 40px' }}>
+      <Container>
+        <div style={{ display: 'grid', gridTemplateColumns: '1.4fr repeat(3, 1fr) auto', gap: 64, alignItems: 'start', paddingBottom: 56 }}>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
+              <DalivimMark size={24} color="rgba(255,255,255,0.85)"/>
+              <span style={{ fontFamily: "'Space Grotesk'", fontWeight: 500, fontSize: 19, letterSpacing: '0.02em' }}>DALIVIM</span>
+            </div>
+            <p style={{ fontFamily: "'Inter'", fontSize: 13, lineHeight: 1.6, color: 'rgba(255,255,255,0.5)', margin: 0, maxWidth: 260 }}>
+              Infraestrutura de custódia para acordos modernos.<br/>Seguro. Transparente. Inevitável.
+            </p>
+          </div>
+          {columns.map(col => (
+            <div key={col.label}>
+              <div style={{ fontFamily: "'Inter'", fontSize: 11, fontWeight: 500, letterSpacing: '0.18em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)', marginBottom: 18 }}>{col.label}</div>
+              <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
+                {col.items.map(it => (
+                  <li key={it.name}><a href={it.href} style={{ fontFamily: "'Inter'", fontSize: 14, color: 'rgba(255,255,255,0.75)', textDecoration: 'none', transition: 'color 200ms' }} onMouseEnter={e=>e.currentTarget.style.color='#fff'} onMouseLeave={e=>e.currentTarget.style.color='rgba(255,255,255,0.75)'}>{it.name}</a></li>
+                ))}
+              </ul>
+            </div>
+          ))}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 16, alignItems: 'flex-end' }}>
+            <button style={{ fontFamily: "'Inter'", fontSize: 12, fontWeight: 500, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.12)', color: '#fff', padding: '8px 12px', borderRadius: 9999, display: 'inline-flex', alignItems: 'center', gap: 6, cursor: 'pointer' }}>
+              PT <Icon name="chevron-down" size={12}/>
+            </button>
+            <div style={{ display: 'flex', gap: 14, color: 'rgba(255,255,255,0.55)' }}>
+              <a href="#" aria-label="LinkedIn" style={{ color: 'inherit' }}><Icon name="linkedin" size={18}/></a>
+              <a href="#" aria-label="X" style={{ color: 'inherit' }}><Icon name="twitter" size={18}/></a>
+              <a href="#" aria-label="GitHub" style={{ color: 'inherit' }}><Icon name="github" size={18}/></a>
+            </div>
+          </div>
+        </div>
+        <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: 24, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 16, flexWrap: 'wrap', fontFamily: "'Inter'", fontSize: 12, color: 'rgba(255,255,255,0.4)' }}>
+          <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap' }}>
+            <span>© {new Date().getFullYear()} Dalivim. Todos os direitos reservados.</span>
+            <span>63.278.101/0001-49</span>
+          </div>
+          <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap' }}>
+            {['Termos', 'Privacidade', 'Cookies'].map(t => <a key={t} href="#" style={{ color: 'inherit', textDecoration: 'none' }}>{t}</a>)}
+          </div>
+        </div>
+      </Container>
+    </footer>
+  );
+}
+
+// ─── STICKY CTA ──────────────────────────────────────────────────────────────
+function StickyCta({ onCta }) {
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const onScroll = () => { const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight); setVisible(pct > 0.25 && pct < 0.92); };
+    window.addEventListener('scroll', onScroll, { passive: true }); onScroll();
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+  return (
+    <div style={{
+      position: 'fixed', bottom: 24, left: '50%',
+      transform: `translateX(-50%) translateY(${visible ? 0 : 24}px)`,
+      opacity: visible ? 1 : 0, pointerEvents: visible ? 'auto' : 'none',
+      transition: 'opacity 280ms cubic-bezier(0.2,0.6,0.2,1), transform 280ms cubic-bezier(0.2,0.6,0.2,1)', zIndex: 50,
+      background: '#0A0A0A', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 9999,
+      padding: '8px 8px 8px 24px', display: 'flex', alignItems: 'center', gap: 16,
+      boxShadow: '0 20px 48px -12px rgba(0,0,0,0.4)',
+    }}>
+      <span style={{ fontFamily: "'Inter'", fontSize: 14, color: 'rgba(255,255,255,0.9)', display: 'inline-flex', alignItems: 'center', gap: 10 }}>
+        <span style={{ width: 8, height: 8, borderRadius: 9999, background: '#1E8A5A', boxShadow: '0 0 0 4px rgba(30,138,90,0.2)' }}/>
+        Comece grátis em menos de 1 minuto
+      </span>
+      <Button variant="primary" onClick={onCta} style={{ padding: '10px 20px', fontSize: 14 }}>Criar transação<Icon name="arrow-right" size={14}/></Button>
+    </div>
+  );
+}
+
+// ─── MODAL ───────────────────────────────────────────────────────────────────
+function CreateTxModal({ open, onClose }) {
+  const [step, setStep] = useState(0);
+  if (!open) return null;
+  const money = 'R$ 2.000,00';
+  return (
+    <div style={{ position: 'fixed', inset: 0, zIndex: 100, background: 'rgba(10,10,10,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }} onClick={onClose}>
+      <div onClick={e => e.stopPropagation()} style={{ width: 'min(560px, 100%)', background: '#fff', borderRadius: 32, border: '1px solid #E4E4E7', padding: 40 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 28 }}>
+          <div style={{ fontFamily: "'Inter'", fontSize: 12, fontWeight: 500, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#71717A' }}>Nova transação · Passo {step + 1}/3</div>
+          <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#71717A', padding: 4 }}><Icon name="x" size={20}/></button>
+        </div>
+        {step === 0 && (
+          <div>
+            <h3 style={{ fontFamily: "'Space Grotesk'", fontWeight: 500, fontSize: 28, margin: '0 0 8px', letterSpacing: '-0.012em' }}>O que você está combinando?</h3>
+            <p style={{ fontFamily: "'Inter'", fontSize: 15, color: '#71717A', margin: '0 0 28px' }}>Descreva o serviço ou produto. Simples.</p>
+            <label style={{ fontFamily: "'Inter'", fontWeight: 500, fontSize: 13, color: '#0A0A0A', display: 'block', marginBottom: 6 }}>Descrição</label>
+            <textarea defaultValue="Landing page em Next.js. Entrega em 10 dias." style={{ width: '100%', background: '#fff', border: '1px solid #E4E4E7', borderRadius: 14, padding: '14px 16px', fontFamily: "'Inter'", fontSize: 15, outline: 'none', minHeight: 80, resize: 'none', boxSizing: 'border-box' }}/>
+            <label style={{ fontFamily: "'Inter'", fontWeight: 500, fontSize: 13, color: '#0A0A0A', display: 'block', margin: '20px 0 6px' }}>Valor</label>
+            <input defaultValue={money} style={{ width: '100%', background: '#fff', border: '1px solid #E4E4E7', borderRadius: 14, padding: '14px 16px', fontFamily: "'Inter'", fontSize: 16, outline: 'none', boxSizing: 'border-box' }}/>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 28 }}>
+              <Button variant="primary" onClick={() => setStep(1)}>Continuar</Button>
+            </div>
+          </div>
+        )}
+        {step === 1 && (
+          <div>
+            <h3 style={{ fontFamily: "'Space Grotesk'", fontWeight: 500, fontSize: 28, margin: '0 0 8px', letterSpacing: '-0.012em' }}>Com quem?</h3>
+            <p style={{ fontFamily: "'Inter'", fontSize: 15, color: '#71717A', margin: '0 0 28px' }}>O link será enviado para a outra parte.</p>
+            <label style={{ fontFamily: "'Inter'", fontWeight: 500, fontSize: 13, display: 'block', marginBottom: 6 }}>Email do comprador</label>
+            <input defaultValue="helena@exemplo.com" style={{ width: '100%', background: '#fff', border: '1px solid #E4E4E7', borderRadius: 14, padding: '14px 16px', fontFamily: "'Inter'", fontSize: 16, outline: 'none', boxSizing: 'border-box' }}/>
+            <label style={{ fontFamily: "'Inter'", fontWeight: 500, fontSize: 13, display: 'block', margin: '20px 0 6px' }}>Sua chave Pix (para receber)</label>
+            <input defaultValue="contato@dalivim.com.br" style={{ width: '100%', background: '#fff', border: '1px solid #E4E4E7', borderRadius: 14, padding: '14px 16px', fontFamily: "'Inter'", fontSize: 16, outline: 'none', boxSizing: 'border-box' }}/>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 28 }}>
+              <Button variant="outlined" onClick={() => setStep(0)}>Voltar</Button>
+              <Button variant="primary" onClick={() => setStep(2)}>Gerar link seguro</Button>
+            </div>
+          </div>
+        )}
+        {step === 2 && (
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ width: 56, height: 56, background: '#E8F2EC', borderRadius: 9999, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', marginBottom: 20 }}>
+              <Icon name="check" size={28} color="#16794C"/>
+            </div>
+            <h3 style={{ fontFamily: "'Space Grotesk'", fontWeight: 500, fontSize: 28, margin: '0 0 8px', letterSpacing: '-0.012em' }}>Transação criada.</h3>
+            <p style={{ fontFamily: "'Inter'", fontSize: 16, color: '#71717A', margin: '0 0 28px' }}>{money} · em custódia após pagamento. Link enviado para helena@exemplo.com.</p>
+            <div style={{ background: '#F4F4F5', border: '1px solid #E4E4E7', borderRadius: 14, padding: '14px 18px', fontFamily: "ui-monospace, 'SF Mono', Menlo, monospace", fontSize: 14, color: '#0A0A0A', marginBottom: 24, wordBreak: 'break-all' }}>dalivim.com.br/t/tx_9f3a21b8</div>
+            <Button variant="dark" onClick={onClose}>Fechar</Button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ─── APP ─────────────────────────────────────────────────────────────────────
+function App() {
+  const [open, setOpen] = useState(false);
+  const openModal = () => setOpen(true);
+  return (
+    <main>
+      <Header onCta={openModal}/>
+      <Hero onPrimary={openModal} onSecondary={() => document.getElementById('how').scrollIntoView({ behavior: 'smooth' })}/>
+      <TrustStrip/>
+      <HowItWorks/>
+      <CtaInlineBand onCta={openModal} eyebrow="Pronto para começar" title="Crie sua primeira transação em 60 segundos." sub="Sem cadastro complicado, sem mensalidade. Você só paga quando o dinheiro é liberado." cta="Começar agora"/>
+      <Scenarios onCta={openModal}/>
+      <CtaBarDark onCta={openModal}/>
+      <WhyChoose/>
+      <CtaInlineBand onCta={openModal} eyebrow="Ainda com dúvidas?" title="Comece com uma transação pequena para testar." sub="Você não precisa se comprometer. Teste o fluxo, sinta a segurança, depois escale." cta="Testar agora"/>
+      <Faq/>
+      <FinalCta onCta={openModal}/>
+      <Footer/>
+      <StickyCta onCta={openModal}/>
+      <CreateTxModal open={open} onClose={() => setOpen(false)}/>
+    </main>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
