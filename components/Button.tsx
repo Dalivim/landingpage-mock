@@ -45,13 +45,16 @@ export function Button({
   onClick?: () => void;
   style?: CSSProperties;
 }) {
+  const initialBackground =
+    style.background ?? variants[variant].background ?? 'transparent';
+
   const handleEnter = (e: MouseEvent<HTMLButtonElement>) => {
     const h = hoverMap[variant];
     Object.assign(e.currentTarget.style, h);
   };
+
   const handleLeave = (e: MouseEvent<HTMLButtonElement>) => {
-    const v = variants[variant];
-    e.currentTarget.style.background = (v.background as string) ?? '';
+    e.currentTarget.style.background = initialBackground as string;
     e.currentTarget.style.opacity = '1';
   };
 
