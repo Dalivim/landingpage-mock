@@ -11,7 +11,7 @@ import { useIsMobile } from './useMedia';
 function Hero({ onPrimary, onSecondary }: { onPrimary?: () => void; onSecondary?: () => void }) {
   const isMobile = useIsMobile();
   return (
-    <section style={{
+    <section id="hero" style={{
       position: 'relative',
       paddingTop: isMobile ? 120 : 180,
       paddingBottom: isMobile ? 96 : 160,

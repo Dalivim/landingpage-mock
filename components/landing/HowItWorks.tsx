@@ -53,7 +53,7 @@ function Stepper({ step, onJump }: { step: number; onJump: (i: number) => void }
           <li key={s.id}>
             <button onClick={() => onJump(i)} style={{
               width: '100%', display: 'grid', gridTemplateColumns: '48px 1fr', gap: 20,
-              padding: '24px 0', background: 'transparent', border: 'none',
+              padding: '16px 0', background: 'transparent', border: 'none',
               borderBottom: i < 2 ? '1px solid #E4E4E7' : 'none',
               textAlign: 'left', cursor: 'pointer',
               opacity: active ? 1 : done ? 0.55 : 0.35,
@@ -61,13 +61,13 @@ function Stepper({ step, onJump }: { step: number; onJump: (i: number) => void }
             }}>
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <div style={{
-                  width: 32, height: 32, borderRadius: 9999,
+                  width: 28, height: 28, borderRadius: 9999,
                   border: '1.5px solid',
                   borderColor: active || done ? '#0A0A0A' : '#D4D4D8',
                   background: done ? '#0A0A0A' : '#fff',
                   color: done ? '#fff' : '#0A0A0A',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontFamily: "'Space Grotesk'", fontWeight: 500, fontSize: 14,
+                  fontFamily: "'Space Grotesk'", fontWeight: 500, fontSize: 13,
                   transition: 'all 280ms cubic-bezier(0.2,0.6,0.2,1)',
                 }}>
                   {done ? <Icon name="check" size={14}/> : (i + 1)}
@@ -417,11 +417,11 @@ function ReceiptCard({ step, cycle }: { step: number; cycle: number }) {
     <div style={{
       background: '#fff',
       borderRadius: 20,
-      padding: isMobile ? 24 : 40,
+      padding: isMobile ? 20 : 32,
       boxShadow: '0 1px 2px rgba(10,10,10,0.04), 0 24px 60px -24px rgba(10,10,10,0.10)',
       border: '1px solid #E4E4E7',
-      display: 'flex', flexDirection: 'column', gap: isMobile ? 24 : 32,
-      minHeight: isMobile ? 'auto' : 620,
+      display: 'flex', flexDirection: 'column', gap: isMobile ? 16 : 24,
+      minHeight: isMobile ? 'auto' : 420,
       position: 'relative',
     }}>
       {/* Paper corner detail — subtle, receipt-like */}
@@ -536,11 +536,16 @@ function HowItWorks() {
   const isMobile = useIsMobile();
   const isTablet = useIsTablet();
   return (
-    <section id="how" style={{ padding: isMobile ? '80px 0' : '128px 0', background: '#F4F4F5', borderBottom: '1px solid #E4E4E7' }}>
+    <section id="how" style={{ padding: isMobile ? '56px 0' : '80px 0', background: '#F4F4F5', borderBottom: '1px solid #E4E4E7' }}>
       <Container>
+        {/* Layout: on wide screens, put heading + stepper in the left column and the animated card in the right column
+            so the card starts at the same vertical position as the heading. On tablet/mobile it stacks. */}
         <div style={{
-          display: 'flex', alignItems: 'baseline', justifyContent: 'space-between',
-          marginBottom: isMobile ? 40 : 64, gap: 24, flexWrap: 'wrap',
+          display: isMobile ? 'block' : 'grid',
+          gridTemplateColumns: isMobile ? '1fr' : (isTablet ? '1fr' : 'minmax(300px, 1fr) 1.15fr'),
+          gap: isMobile ? 20 : 40,
+          alignItems: 'start',
+          marginBottom: isMobile ? 28 : 40,
         }}>
           <div>
             <div style={{
@@ -556,16 +561,17 @@ function HowItWorks() {
               Uma transação.<br/>
               <span style={{ color: '#71717A' }}>Três passos simples.</span>
             </h2>
+
+            {/* Stepper sits directly under the heading in the left column on wide screens */}
+            <div style={{ marginTop: isMobile ? 20 : 28 }}>
+              <Stepper step={sim.step} onJump={sim.jumpTo} />
+            </div>
           </div>
-        </div>
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: isTablet ? '1fr' : '1fr 1.15fr',
-          gap: isMobile ? 32 : 64,
-          alignItems: 'start',
-        }}>
-          <Stepper step={sim.step} onJump={sim.jumpTo}/>
-          <ReceiptCard step={sim.step} cycle={sim.cycle}/>
+
+          {/* Animated receipt card aligned to the top of the heading */}
+          <div>
+            <ReceiptCard step={sim.step} cycle={sim.cycle} />
+          </div>
         </div>
       </Container>
     </section>
