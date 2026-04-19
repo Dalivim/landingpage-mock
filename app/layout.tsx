@@ -1,17 +1,40 @@
-import type { Metadata } from "next";
-import "./globals.css";
+import type { Metadata, Viewport } from 'next';
+import { Inter, Space_Grotesk } from 'next/font/google';
+import './globals.css';
+
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+  display: 'swap',
+});
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ['latin'],
+  variable: '--font-space-grotesk',
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
-  title: "Dalivim",
-  description: "Uma camada de segurança para freelancers e negociações online. O pagamento fica seguro até as duas partes cumprirem o acordo.",
-  icons: {
-    icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><g fill='none' stroke='%230A0A0A' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'><path d='M32 8 L54 20 L54 44 L32 56 L10 44 L10 20 Z'/><path d='M32 8 L32 32 M54 20 L32 32 M54 44 L32 32 M32 56 L32 32 M10 44 L32 32 M10 20 L32 32'/></g><g fill='%230A0A0A'><circle cx='32' cy='8' r='5'/><circle cx='54' cy='20' r='5'/><circle cx='54' cy='44' r='5'/><circle cx='32' cy='56' r='5'/><circle cx='10' cy='44' r='5'/><circle cx='10' cy='20' r='5'/><circle cx='32' cy='32' r='6'/></g></svg>",
-  },
+  title: 'Dalivim — Pix com garantia de entrega',
+  description:
+    'Dalivim retém o pagamento até a entrega. Se algo der errado, o dinheiro volta. Sem mensalidade. Sem cartão.',
+  // Next.js will auto-pick up app/icon.svg and emit <link rel="icon">.
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: '#0A0A0A',
+};
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <html lang="pt-BR">
+    <html lang="pt-BR" className={`${inter.variable} ${spaceGrotesk.variable}`}>
       <body>{children}</body>
     </html>
   );

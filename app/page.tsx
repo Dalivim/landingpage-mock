@@ -1,31 +1,28 @@
 'use client';
-import { useState } from 'react';
-import { Header } from '@/components/Header';
-import { Hero, TrustStrip } from '@/components/Hero';
-import { HowItWorks } from '@/components/HowItWorks';
-import { CtaInlineBand } from '@/components/CtaInlineBand';
-import { Scenarios } from '@/components/Scenarios';
-import { CtaBarDark } from '@/components/CtaBarDark';
-import { WhyChoose } from '@/components/WhyChoose';
-import { Faq } from '@/components/Faq';
-import { FinalCta } from '@/components/FinalCta';
-import { Footer } from '@/components/Footer';
-import { StickyCta } from '@/components/StickyCta';
-import { CreateTxModal } from '@/components/CreateTxModal';
 
-export default function Home() {
-  const [modalOpen, setModalOpen] = useState(false);
-  const openModal = () => setModalOpen(true);
-  const closeModal = () => setModalOpen(false);
+import * as React from 'react';
+import { Header } from '@/components/landing/Header';
+import { Hero } from '@/components/landing/Hero';
+import { HowItWorks } from '@/components/landing/HowItWorks';
+import { WhyChoose } from '@/components/landing/Sections';
+import { Scenarios } from '@/components/landing/Scenarios';
+import { FinalCta, Footer } from '@/components/landing/OrbitalFinale';
+import { CtaInlineBand, CtaBarDark, StickyCta } from '@/components/landing/Ctas';
+import { Faq } from '@/components/landing/Faq';
+import { CreateTxModal } from '@/components/landing/CreateTxModal';
+
+export default function LandingPage() {
+  const [open, setOpen] = React.useState(false);
+  const openModal = () => setOpen(true);
+  const scrollTo = (id: string) => {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+  };
 
   return (
     <main>
       <Header onCta={openModal} />
-      <Hero
-        onPrimary={openModal}
-        onSecondary={() => document.getElementById('how')?.scrollIntoView({ behavior: 'smooth' })}
-      />
-      <TrustStrip />
+      <Hero onPrimary={openModal} onSecondary={() => scrollTo('how')} />
       <HowItWorks />
       <CtaInlineBand
         onCta={openModal}
@@ -48,7 +45,7 @@ export default function Home() {
       <FinalCta onCta={openModal} />
       <Footer />
       <StickyCta onCta={openModal} />
-      <CreateTxModal open={modalOpen} onClose={closeModal} />
+      <CreateTxModal open={open} onClose={() => setOpen(false)} />
     </main>
   );
 }
