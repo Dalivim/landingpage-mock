@@ -6,7 +6,7 @@ import { HeroHeadline } from './MicroBits';
 import MicroExperience from './MicroExperience';
 import Icon from './Icon';
 
-export default function HeroWithMicro({ variant = 'v2', tweaks = {} }) {
+export default function HeroWithMicro({ variant = 'v2', tweaks = {} }: { variant?: string; tweaks?: { headlineText?: string; resolutionText?: string; animatedHeadline?: boolean; [key: string]: any } }) {
   const [tipo, setTipo] = useState(null);
 
   return (

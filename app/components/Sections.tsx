@@ -189,7 +189,7 @@ function TxChip({ label, color = '#7FD1A8' }) {
     </span>
   );
 }
-function ReceiptRow({ k, v, vColor, vWeight }) {
+function ReceiptRow({ k, v, vColor, vWeight }: { k: any; v: any; vColor?: any; vWeight?: any }) {
   return (
     <div style={{
       display: 'flex', justifyContent: 'space-between', alignItems: 'center',

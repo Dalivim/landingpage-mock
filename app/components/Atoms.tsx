@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
-export function Button({ variant = 'primary', children, onClick, className = '', style = {}, type = 'button' }) {
+export function Button({ variant = 'primary', children, onClick, className = '', style = {}, type = 'button' }: { variant?: string; children?: React.ReactNode; onClick?: React.MouseEventHandler<HTMLButtonElement>; className?: string; style?: React.CSSProperties; type?: 'button' | 'submit' | 'reset' }) {
   const base = {
     fontFamily: "var(--font-body), sans-serif",
     fontWeight: 500,

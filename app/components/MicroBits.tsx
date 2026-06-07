@@ -15,7 +15,7 @@ export const TIPO_OPTIONS = [
 ];
 
 // ---------- WORD LOOP (kept for completeness; landing currently uses static headline) ----------
-function LoopingFearLine({ locked, frozenHeadline }) {
+function LoopingFearLine({ locked, frozenHeadline }: { locked?: any; frozenHeadline?: any }) {
   const words = ['pagar', 'vender', 'trabalhar'];
   const [wordIdx, setWordIdx] = useState(0);
   const [text, setText] = useState(words[0]);

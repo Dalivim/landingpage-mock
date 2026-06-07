@@ -47,7 +47,7 @@ function ValueSlider({ value, onChange }) {
   );
 }
 
-export default function MicroExperience({ onTipoLock, onComplete }) {
+export default function MicroExperience({ onTipoLock, onComplete }: { onTipoLock?: any; onComplete?: any }) {
   const [step, setStep] = useState(1);
   const [tipo, setTipo] = useState(null);
   const [value, setValue] = useState(500);

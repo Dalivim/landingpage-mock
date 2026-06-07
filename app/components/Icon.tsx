@@ -1,9 +1,10 @@
+import React from 'react';
 // Inline SVG icons — outline 2px, lucide style
-export default function Icon({ name, size = 20, color = 'currentColor', strokeWidth = 2, style = {} }) {
+export default function Icon({ name, size = 20, color = 'currentColor', strokeWidth = 2, style = {} }: { name: string; size?: number; color?: string; strokeWidth?: number; style?: React.CSSProperties }) {
   const c = {
     width: size, height: size,
     viewBox: '0 0 24 24', fill: 'none',
-    stroke: color, strokeWidth, strokeLinecap: 'round', strokeLinejoin: 'round',
+    stroke: color, strokeWidth, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const,
     style: { flexShrink: 0, ...style },
     'aria-hidden': true,
   };

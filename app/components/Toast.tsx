@@ -1,8 +1,8 @@
 'use client';
 
-import { createContext, useContext, useState, useCallback, useEffect } from 'react';
+import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
 
-const ToastContext = createContext({ show: () => {} });
+const ToastContext = createContext({ show: (_message?: string) => {} });
 
 export function ToastProvider({ children }) {
   const [toast, setToast] = useState(null);
@@ -61,7 +61,7 @@ export function useToast() {
 export function ComingSoonAction({
   as = 'a', message = 'Em breve. Estamos finalizando o cadastro.', children,
   onClick, href = '#', style, ...rest
-}) {
+}: { as?: string; message?: string; children: React.ReactNode; onClick?: React.MouseEventHandler; href?: string; style?: React.CSSProperties; [x: string]: any }) {
   const { show } = useToast();
   const handle = (e) => {
     e.preventDefault();
