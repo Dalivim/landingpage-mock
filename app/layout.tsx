@@ -1,41 +1,34 @@
-import type { Metadata, Viewport } from 'next';
-import { Inter, Space_Grotesk } from 'next/font/google';
 import './globals.css';
+import '../styles/colors_and_type.css';
+import { Inter, Space_Grotesk } from 'next/font/google';
+import { ToastProvider } from './components/Toast';
 
 const inter = Inter({
   subsets: ['latin'],
-  variable: '--font-inter',
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-body',
   display: 'swap',
 });
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
-  variable: '--font-space-grotesk',
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-display',
   display: 'swap',
 });
 
-export const metadata: Metadata = {
-  title: 'Dalivim — Pix com garantia de entrega',
-  description:
-    'Dalivim retém o pagamento até a entrega. Se algo der errado, o dinheiro volta. Sem mensalidade. Sem cartão.',
-  // Next.js will auto-pick up app/icon.svg and emit <link rel="icon">.
+export const metadata = {
+  title: 'Dalivim — Medo de pagar e não receber? A gente garante.',
+  description: 'Pix com garantia de entrega. O dinheiro só é liberado quando tudo é entregue.',
+  icons: { icon: '/dalivim-mark.svg' },
 };
 
-export const viewport: Viewport = {
-  width: 'device-width',
-  initialScale: 1,
-  maximumScale: 5,
-  themeColor: '#0A0A0A',
-};
-
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="pt-BR" className={`${inter.variable} ${spaceGrotesk.variable}`}>
-      <body>{children}</body>
+      <body>
+        <ToastProvider>{children}</ToastProvider>
+      </body>
     </html>
   );
 }
